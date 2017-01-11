@@ -93,3 +93,7 @@ services:
         depends_on:
         - gracc-collector
         - elasticsearch
+    gratia-probe-pbs:
+        image: opensciencegrid/gratia-probe-pbs-test
+        depends_on:
+        - gracc-collector
