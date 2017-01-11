@@ -5,7 +5,7 @@ MAINTAINER kretzke@fnal.gov
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     yum -y install yum-plugin-priorities && \
     rpm -Uvh https://repo.grid.iu.edu/osg/3.3/osg-3.3-el7-release-latest.rpm && \
-    yum -y install gratia-probe-pbs-lsf
+    yum -y install which less gratia-probe-pbs-lsf
 
 # add test data
 ADD . /gratia
