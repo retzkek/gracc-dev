@@ -1,0 +1,87 @@
+version: '2'
+services:
+    elasticsearch:
+        image: elasticsearch:5
+        ports:
+        - "9200:9200"
+    kibana:
+        image: kibana:5
+        ports:
+        - "5601:5601"
+        environment:
+        - ELASTICSEARCH_URL=http://elasticsearch:9200
+        depends_on:
+        - elasticsearch
+    logstash:
+        image: logstash:5
+        volumes:
+        - ./:/gracc
+        command: -f '/gracc/logstash-syslog.conf'
+        #ports:
+        #- "2514:2514"
+        labels:
+            logspout.exclude: "true"
+        environment:
+        - LOGSPOUT=ignore
+        depends_on:
+        - elasticsearch
+    logspout:
+        image: gliderlabs/logspout
+        volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        command: syslog://logstash:2514
+        environment:
+        - EXCLUDE_LABEL=logspout.exclude
+        - SYSLOG_FORMAT=rfc3164
+        labels:
+            logspout.exclude: "true"
+        depends_on:
+        - logstash
+    prometheus:
+        image: quay.io/prometheus/prometheus
+        volumes:
+        - ./:/gracc
+        command:
+        - '-config.file=/gracc/prometheus.yml'
+        ports:
+        - "9090:9090"
+    cadvisor:
+        image: google/cadvisor
+        volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:rw
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+        #ports:
+        #- "8081:8080"
+    grafana:
+        image: grafana/grafana
+        ports:
+        - "3000:3000"
+        depends_on:
+        - prometheus
+        - elasticsearch
+    rabbitmq:
+        image: rabbitmq:management
+        ports:
+        - "15672:15672"
+    gracc-collector:
+        image: opensciencegrid/gracc-collector
+        environment:
+        - GRACC_AMQP_HOST=rabbitmq
+        - GRACC_AMQP_EXCHANGE=gracc.osg.raw
+        - GRACC_LOGLEVEL=debug
+        ports:
+        - "8080:8080"
+        depends_on:
+        - rabbitmq
+    gracc-stash-raw:
+        image: retzkek/gracc-stash-raw:debug
+        environment:
+        - GRACC_INSTANCE=test
+        - GRACC_STREAM=osg
+        - ELASTICSEARCH_HOST=elasticsearch
+        - AMQP_HOST=rabbitmq
+        depends_on:
+        - gracc-collector
+        - elasticsearch
