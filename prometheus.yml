@@ -15,19 +15,17 @@ rule_files:
 
 scrape_configs:
   - job_name: 'prometheus'
-    metrics_path: '/prometheus/metrics'
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ['prometheus:9090']
   - job_name: 'docker'
     static_configs:
     - targets: ['cadvisor:8080']
   - job_name: 'gracc-collector'
     static_configs:
     - targets: ['gracc-collector:8080']
-  #- job_name: 'elasticsearch'
-  #  scrape_interval: 60s
-  #  static_configs:
-  #    - targets: ['prometheus-elasticsearch:9108']
-  #- job_name: 'rabbitmq'
-  #  static_configs:
-  #    - targets: ['prometheus-rabbitmq:9111']
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['prometheus-elasticsearch:9108']
+  - job_name: 'rabbitmq'
+    static_configs:
+      - targets: ['prometheus-rabbitmq:9090']

@@ -54,6 +54,14 @@ services:
             - /var/lib/docker/:/var/lib/docker:ro
         #ports:
         #- "8081:8080"
+    prometheus-elasticsearch:
+        image: thedutchselection/prometheus_elasticsearch_exporter:0.3.0
+        environment:
+        - ELASTICSEARCH_URI=http://elasticsearch:9200
+    prometheus-rabbitmq:
+        image: kbudde/rabbitmq-exporter
+        environment:
+        - RABBIT_URL=http://rabbitmq:15672
     grafana:
         image: grafana/grafana
         ports:
