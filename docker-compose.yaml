@@ -94,6 +94,10 @@ services:
         - gracc-collector
         - elasticsearch
     gratia-probe-pbs:
-        image: opensciencegrid/gratia-probe-pbs-test
+        build: gratia-probe-pbs
+        depends_on:
+        - gracc-collector
+    gratia-probe-condor:
+        build: gratia-probe-condor
         depends_on:
         - gracc-collector

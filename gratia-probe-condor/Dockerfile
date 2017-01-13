@@ -7,13 +7,12 @@ RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.
     rpm -Uvh https://repo.grid.iu.edu/osg/3.3/osg-3.3-el7-release-latest.rpm
 
 # install gratia probe
-RUN yum -y install which less gratia-probe-pbs-lsf
+RUN yum -y install condor-python gratia-probe-condor
 
 # add test data
-ADD . /gratia
+COPY history/* /var/lib/gratia/data/
 
 # add config
-COPY ProbeConfig urCollector.conf /etc/gratia/pbs-lsf/
+COPY ProbeConfig /etc/gratia/condor/
 
-CMD ["/usr/share/gratia/pbs-lsf/pbs-lsf_meter.cron.sh"]
-#CMD cron && tail -f /var/log/cron.log
+CMD ["/usr/share/gratia/condor/condor_meter"]
