@@ -1,0 +1,6 @@
+version: '2'
+services:
+    gratia-probe-pbs:
+        build: gratia-probe-pbs
+    gratia-probe-condor:
+        build: gratia-probe-condor

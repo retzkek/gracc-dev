@@ -1,23 +1,27 @@
 # gracc dev environment
 Run `docker-compose up -d` to get a full GRACC stack with monitoring running under 
-Docker on your local machine.
+Docker on your local machine. Go to localhost:8888 to view service frontend.
+
+Run `docker-compose -f docker-compose.probes.yaml up` to run test probes.
 
 ## Prerequisites
 * Recent Docker engine and docker-compose installed
 
 ## Services
 
-### Interactive Services
-These services expose ports for you to interact with.
-* gracc-collector - `http://localhost:8080`
-* elasticsearch -  `http://localhost:9200`
-* kibana  - `http://localhost:5601`
-* grafana  - `http://localhost:3000`
-* prometheus  - `http://localhost:9090`
-* rabbitmq - `http://localhost:15672`
+### Core Services
+* elasticsearch
+* rabbitmq
+* gracc-collector
+* gracc-stash-raw
+
+### Monitoring Frontend Services
+* kibana
+* grafana
+* prometheus
+* nginx (listens on `localhost:8888`, proxies other services)
 
 ### Other Services
-* gracc-stash-raw
 * logspout (collects container logs)
 * logstash (sends container logs to elasticsearch)
 * cadvisor (collects container telemetry)

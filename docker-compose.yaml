@@ -1,13 +1,23 @@
 version: '2'
 services:
+    nginx:
+        build: nginx
+        ports:
+        - 8888:80
+        depends_on:
+        - kibana
+        - grafana
+        - prometheus
+        - rabbitmq
+        - gracc-collector
     elasticsearch:
         image: elasticsearch:5
-        ports:
-        - "9200:9200"
+        #ports:
+        #- "9200:9200"
     kibana:
-        image: kibana:5
-        ports:
-        - "5601:5601"
+        build: kibana
+        #ports:
+        #- "5601:5601"
         environment:
         - ELASTICSEARCH_URL=http://elasticsearch:9200
         depends_on:
@@ -42,9 +52,10 @@ services:
         volumes:
         - ./:/gracc
         command:
-        - '-config.file=/gracc/prometheus.yml'
-        ports:
-        - "9090:9090"
+        - -config.file=/gracc/prometheus.yml
+        - -web.external-url=http://localhost:8888/prometheus
+        #ports:
+        #- "9090:9090"
     cadvisor:
         image: google/cadvisor
         volumes:
@@ -64,23 +75,22 @@ services:
         - RABBIT_URL=http://rabbitmq:15672
     grafana:
         image: grafana/grafana
-        ports:
-        - "3000:3000"
-        depends_on:
-        - prometheus
-        - elasticsearch
+        environment:
+        - GF_SERVER_ROOT_URL=http://localhost:8888/grafana/
+        #ports:
+        #- "3000:3000"
     rabbitmq:
         image: rabbitmq:management
-        ports:
-        - "15672:15672"
+        #ports:
+        #- "15672:15672"
     gracc-collector:
         image: opensciencegrid/gracc-collector
         environment:
         - GRACC_AMQP_HOST=rabbitmq
         - GRACC_AMQP_EXCHANGE=gracc.osg.raw
         - GRACC_LOGLEVEL=debug
-        ports:
-        - "8080:8080"
+        #ports:
+        #- "8080:8080"
         depends_on:
         - rabbitmq
     gracc-stash-raw:
@@ -93,11 +103,3 @@ services:
         depends_on:
         - gracc-collector
         - elasticsearch
-    gratia-probe-pbs:
-        build: gratia-probe-pbs
-        depends_on:
-        - gracc-collector
-    gratia-probe-condor:
-        build: gratia-probe-condor
-        depends_on:
-        - gracc-collector

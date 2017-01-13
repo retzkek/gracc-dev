@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>GRACC Dev Environment</title>
+</head>
+<body>
+    <h1>GRACC Dev Environment</h1>
+    <h2>Services</h2>
+    <ul>
+        <li><a href="/grafana/">Grafana</a></li>
+        <li><a href="/kibana/">Kibana</a></li>
+        <li><a href="/prometheus/">Prometheus</a></li>
+        <li><a href="/rabbitmq/">RabbitMQ</a></li>
+        <li><a href="/gracc/">GRACC Collector</a></li>
+    </ul>
+    <h2>Testing</h2>
+    <p>To run test probes to inject records into the system, run the following:</p>
+    <pre>
+docker-compose -f docker-compose.probes.yaml run gratia-probe-pbs
+docker-compose -f docker-compose.probes.yaml run gratia-probe-condor
+</pre>
+<p>or</p>
+<pre>
+docker-compose -f docker-compose.probes.yaml up -d
+</pre>
+<p>to run them all.</p>
+</body>
+</html>
+
