@@ -36,12 +36,11 @@ services:
         depends_on:
         - logstash
     prometheus:
-        image: quay.io/prometheus/prometheus
+        build: prometheus
         volumes:
-        - ./:/gracc
         - prometheus:/data
         command:
-        - -config.file=/gracc/prometheus.yml
+        - -config.file=/etc/prometheus/prometheus.yml
         - -storage.local.path=/data
         - -web.external-url=http://localhost:8888/prometheus
     cadvisor:
