@@ -12,12 +12,10 @@ services:
         - gracc-collector
     elasticsearch:
         image: elasticsearch:5
-        #ports:
-        #- "9200:9200"
+        volumes:
+        - elasticsearch:/usr/share/elasticsearch/data
     kibana:
         build: kibana
-        #ports:
-        #- "5601:5601"
         environment:
         - ELASTICSEARCH_URL=http://elasticsearch:9200
         depends_on:
@@ -27,8 +25,6 @@ services:
         volumes:
         - ./:/gracc
         command: -f '/gracc/logstash-syslog.conf'
-        #ports:
-        #- "2514:2514"
         labels:
             logspout.exclude: "true"
         environment:
@@ -51,11 +47,11 @@ services:
         image: quay.io/prometheus/prometheus
         volumes:
         - ./:/gracc
+        - prometheus:/data
         command:
         - -config.file=/gracc/prometheus.yml
+        - -storage.local.path=/data
         - -web.external-url=http://localhost:8888/prometheus
-        #ports:
-        #- "9090:9090"
     cadvisor:
         image: google/cadvisor
         volumes:
@@ -63,8 +59,6 @@ services:
             - /var/run:/var/run:rw
             - /sys:/sys:ro
             - /var/lib/docker/:/var/lib/docker:ro
-        #ports:
-        #- "8081:8080"
     prometheus-elasticsearch:
         image: thedutchselection/prometheus_elasticsearch_exporter:0.3.0
         environment:
@@ -77,8 +71,6 @@ services:
         image: grafana/grafana
         environment:
         - GF_SERVER_ROOT_URL=http://localhost:8888/grafana/
-        #ports:
-        #- "3000:3000"
     rabbitmq:
         image: rabbitmq:management
         #ports:
@@ -89,12 +81,10 @@ services:
         - GRACC_AMQP_HOST=rabbitmq
         - GRACC_AMQP_EXCHANGE=gracc.osg.raw
         - GRACC_LOGLEVEL=debug
-        #ports:
-        #- "8080:8080"
         depends_on:
         - rabbitmq
     gracc-stash-raw:
-        image: retzkek/gracc-stash-raw:debug
+        image: retzkek/gracc-stash-raw
         environment:
         - GRACC_INSTANCE=test
         - GRACC_STREAM=osg
@@ -103,3 +93,7 @@ services:
         depends_on:
         - gracc-collector
         - elasticsearch
+volumes:
+    elasticsearch:
+    prometheus:
+
