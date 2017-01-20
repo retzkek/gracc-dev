@@ -21,12 +21,7 @@ services:
         depends_on:
         - elasticsearch
     logstash:
-        image: logstash:5
-        volumes:
-        - ./:/gracc
-        command: -f '/gracc/logstash-syslog.conf'
-        labels:
-            logspout.exclude: "true"
+        build: logstash
         environment:
         - LOGSPOUT=ignore
         depends_on:
@@ -37,10 +32,7 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock
         command: syslog://logstash:2514
         environment:
-        - EXCLUDE_LABEL=logspout.exclude
         - SYSLOG_FORMAT=rfc3164
-        labels:
-            logspout.exclude: "true"
         depends_on:
         - logstash
     prometheus:
