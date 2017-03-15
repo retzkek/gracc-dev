@@ -64,21 +64,26 @@ services:
         - GF_SERVER_ROOT_URL=http://localhost:8888/grafana/
     rabbitmq:
         image: rabbitmq:management
-        #ports:
-        #- "15672:15672"
+        ports:
+        - "15672:15672"
     gracc-collector:
-        image: opensciencegrid/gracc-collector
+        image: retzkek/gracc-collector
         environment:
         - GRACC_AMQP_HOST=rabbitmq
-        - GRACC_AMQP_EXCHANGE=gracc.osg.raw
+        - GRACC_AMQP_EXCHANGE=gracc.test.raw
+        - GRACC_AMQP_DURABLE=true
+        - GRACC_AMQP_AUTODELETE=false
         - GRACC_LOGLEVEL=debug
+        command:
+        - /usr/bin/gracc-collector
+        - -pprof=on
         depends_on:
         - rabbitmq
     gracc-stash-raw:
-        image: retzkek/gracc-stash-raw
+        image: retzkek/gracc-stash-raw:debug
         environment:
         - GRACC_INSTANCE=test
-        - GRACC_STREAM=osg
+        - GRACC_STREAM=test
         - ELASTICSEARCH_HOST=elasticsearch
         - AMQP_HOST=rabbitmq
         depends_on:
