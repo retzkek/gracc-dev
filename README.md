@@ -14,6 +14,7 @@ Run `docker-compose -f docker-compose.probes.yaml up` to run test probes.
 * rabbitmq
 * gracc-collector
 * gracc-stash-raw
+* gracc-request
 
 ### Monitoring Frontend Services
 * kibana
@@ -28,5 +29,4 @@ Run `docker-compose -f docker-compose.probes.yaml up` to run test probes.
 
 ### Missing Services
 These services are part of the GRACC stack but aren't included yet.
-* gracc-request (listens for requests to replay or summarize records)
 * gracc-summary (sends requests for record summarization)

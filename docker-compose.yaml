@@ -89,6 +89,15 @@ services:
         depends_on:
         - gracc-collector
         - elasticsearch
+    gracc-request:
+        image: opensciencegrid/gracc-request:latest
+        depends_on:
+        - rabbitmq
+        - elasticsearch
+        volumes:
+        - ./gracc-request/gracc-request-test.toml:/etc/graccreq/config.d/gracc-request.toml 
+        command: /usr/bin/graccreq -c /etc/graccreq/config.d/gracc-request.toml
+
 volumes:
     elasticsearch:
     prometheus:
